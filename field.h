@@ -21,7 +21,7 @@ public:
     inline void set_height(uint16_t height){this->HEIGHT = height;};
 
 
-    void fill_tiles(Snake& snake, std::list<Food>& food){
+    void fill_tiles(Snake& snake, Food& food){
         for(int y = 0; y < HEIGHT; ++y){
             for(int x = 0; x < WIDTH; ++x){
                 tiles[y][x] = ' ';
@@ -34,9 +34,8 @@ public:
             tiles[body_piece.get_y()][body_piece.get_x()] = 'o';
         }
 
-        for(Food& f : food){
-          tiles[f.get_y()][f.get_x()] = '.';
-        };
+        tiles[food.get_y()][food.get_x()] = '.';
+        
 
 
     }

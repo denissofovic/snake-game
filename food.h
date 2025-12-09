@@ -6,6 +6,7 @@ private:
     uint16_t y;
     
 public:
+    Food(){};
     Food(uint16_t x, uint16_t y): x{x}, y{y}{};
     inline const uint16_t get_x(){return x;};
     inline const uint16_t get_y(){return y;};

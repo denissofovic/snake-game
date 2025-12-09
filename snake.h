@@ -14,7 +14,7 @@ private:
     uint16_t y;
     Direction direction;
 public:
-    Body(uint16_t x, uint16_t y):x{x}, y{y}, direction{Direction::UP}{};
+    Body(uint16_t x, uint16_t y, Direction direction):x{x}, y{y}, direction{direction}{};
     inline const uint16_t get_x(){return x;};
     inline const uint16_t get_y(){return y;};
     inline const Direction get_direction(){return direction;};
@@ -44,19 +44,20 @@ private:
     Direction direction;
     uint16_t x_chg;
     uint16_t y_chg;
+    
 public:
     Snake(){};
-    Snake(uint16_t x, uint16_t y): head_x{x}, head_y{y}, direction{Direction::UP}, x_chg{3000}, y_chg{3000}{
-        body.push_back(Body(x, y+1));
-        body.push_back(Body(x, y+2));
-        body.push_back(Body(x, y+3));
+    Snake(uint16_t x, uint16_t y): head_x{x}, head_y{y}, direction{Direction::UP}, x_chg{head_x}, y_chg{head_y}{
+        body.push_back(Body(x, y+1, direction));
+        body.push_back(Body(x, y+2,direction));
+        body.push_back(Body(x, y+3, direction));
 
     };
 
     inline const uint16_t get_x(){return head_x;};
     inline const uint16_t get_y(){return head_y;};
     inline const Direction get_direction(){return direction;};
-    inline const std::vector<Body>& get_body(){return body;};
+    inline std::vector<Body>& get_body(){return body;};
     inline void set_x(uint16_t x){this->head_x = x;};
     inline void set_y(uint16_t y){this->head_y = y;};
 
@@ -65,6 +66,7 @@ public:
         else if(direction == Direction::DOWN) ++(this->head_y);
         else if(direction == Direction::RIGHT) ++(this->head_x);
         else --(this->head_x);
+
         for(Body& body_piece : body){
             if(body_piece.get_x() == x_chg && body_piece.get_y() == y_chg){
                 body_piece.change_direction(direction);
@@ -79,9 +81,7 @@ public:
             x_chg = head_x;
             y_chg = head_y;
             direction = new_direction;
-        }
-        
-        
+        }  
     }
 
     void eat(){
@@ -105,7 +105,7 @@ public:
             new_y = tail_y;
         }
 
-        body.push_back(Body(new_x,new_y));
+        body.push_back(Body(new_x,new_y,tail.get_direction()));
     }
 
     
