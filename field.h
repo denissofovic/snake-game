@@ -10,16 +10,11 @@ private:
     uint16_t HEIGHT = 25;
     char tiles[25][50];   
    
-
-
 public:
-
-
     inline const uint16_t get_width(){return WIDTH;};
     inline const uint16_t get_height(){return HEIGHT;};
     inline void set_width(uint16_t width){this->WIDTH = width;};
     inline void set_height(uint16_t height){this->HEIGHT = height;};
-
 
     void fill_tiles(Snake& snake, Food& food){
         for(int y = 0; y < HEIGHT; ++y){

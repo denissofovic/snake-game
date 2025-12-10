@@ -34,8 +34,6 @@ struct Body{
     }
 };
 
-
-
 class Snake{
 private: 
     std::vector<Body> body;
