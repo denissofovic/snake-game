@@ -5,7 +5,6 @@
 #include <random>
 #include <chrono>
 #include <thread>
-#include <list>
 #include <termios.h>
 #include <unistd.h>
 
@@ -44,36 +43,19 @@ public:
     void loop(){
         while(1){
             char direction;
-            Direction old_direction;
             if (read(STDIN_FILENO, &direction, 1) == 1) {
                 if(direction == 'a'){
-                old_direction = snake.get_direction();
-                snake.change_direction(Direction::LEFT);
-                if(snake.get_direction() != old_direction){
-                    animate_steering();
-                }
+                    snake.change_direction(Direction::LEFT);
                 }else if(direction == 'd'){
-                    old_direction = snake.get_direction();
-                    snake.change_direction(Direction::RIGHT);
-                    if(snake.get_direction() != old_direction){
-                        animate_steering();
-                    }
+                    snake.change_direction(Direction::RIGHT); 
                 }else if(direction == 's'){
-                    old_direction = snake.get_direction();
-                    snake.change_direction(Direction::DOWN);
-                    if(snake.get_direction() != old_direction){
-                        animate_steering();
-                    }
+                    snake.change_direction(Direction::DOWN);  
                 }else if(direction == 'w'){
-                    old_direction = snake.get_direction();
                     snake.change_direction(Direction::UP);
-                    if(snake.get_direction() != old_direction){
-                        animate_steering();
-                    }
-                };
-                    
+                };      
             }
-            std::this_thread::sleep_for(std::chrono::milliseconds(175));
+
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
             field.fill_tiles(snake,food);
             field.draw();
             snake.move();
@@ -91,6 +73,11 @@ public:
     }
 
     bool game_over(){
+        auto body = snake.get_body();
+        for(int i = 1; i < body.size(); ++i){
+            if(body[0].x == body[i].x && body[0].y == body[i].y)
+                return true;
+        }
         if(snake.get_x() < 0 || snake.get_x() > field.get_width()-1 || snake.get_y() < 0 || snake.get_y() > field.get_height()-1){
             return true;
         }
@@ -102,23 +89,7 @@ public:
         std::mt19937 gen(rd()); 
         std::uniform_int_distribution<> rand_x(2, field.get_width()-2);
         std::uniform_int_distribution<> rand_y(2, field.get_height()-2);
-        
-        food = Food(rand_x(gen), rand_y(gen));
-        
-    }
-
-    void animate_steering(){
-        for(Body& body_piece : snake.get_body()){
-            snake.move();
-            if(food_eaten()){
-                snake.eat();
-                generate_food();
-            }
-            std::this_thread::sleep_for(std::chrono::milliseconds(75));
-            field.fill_tiles(snake,food);
-            field.draw();
-        }
-
+        food = Food(rand_x(gen), rand_y(gen));      
     }
 
     bool food_eaten(){
