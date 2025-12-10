@@ -8,20 +8,20 @@ enum class Direction{
     RIGHT
 };
 
-class Body{
-private:
+struct Turn{
     uint16_t x;
     uint16_t y;
     Direction direction;
-public:
+    Turn(uint16_t x, uint16_t y, Direction direction): x{x}, y{y}, direction{direction}{};
+};
+
+
+struct Body{
+    uint16_t x;
+    uint16_t y;
+    Direction direction;
+    Body(){};
     Body(uint16_t x, uint16_t y, Direction direction):x{x}, y{y}, direction{direction}{};
-    inline const uint16_t get_x(){return x;};
-    inline const uint16_t get_y(){return y;};
-    inline const Direction get_direction(){return direction;};
-
-    inline void set_x(uint16_t x){this->x = x;};
-    inline void set_y(uint16_t y){this->y = y;};
-
     void move(){
         if(direction == Direction::UP)--(this->y);
         else if(direction == Direction::DOWN) ++(this->y);
@@ -37,67 +37,69 @@ public:
 
 
 class Snake{
-private:
-    uint16_t head_x;
-    uint16_t head_y;
+private: 
     std::vector<Body> body;
-    Direction direction;
-    uint16_t x_chg;
-    uint16_t y_chg;
-    
+    Body head;
+    std::deque<Turn> turns;   
+
 public:
     Snake(){};
-    Snake(uint16_t x, uint16_t y): head_x{x}, head_y{y}, direction{Direction::UP}, x_chg{head_x}, y_chg{head_y}{
-        body.push_back(Body(x, y+1, direction));
-        body.push_back(Body(x, y+2,direction));
-        body.push_back(Body(x, y+3, direction));
-
+    Snake(uint16_t x, uint16_t y){
+        body.push_back(Body(x, y, head.direction));
+        body.push_back(Body(x, y+1, head.direction));
+        body.push_back(Body(x, y+2, head.direction));
+        body.push_back(Body(x, y+3, head.direction));
+        head = body[0];
     };
 
-    inline const uint16_t get_x(){return head_x;};
-    inline const uint16_t get_y(){return head_y;};
-    inline const Direction get_direction(){return direction;};
+    inline const uint16_t get_x(){return head.x;};
+    inline const uint16_t get_y(){return head.y;};
+    inline const Direction get_direction(){return head.direction;};
     inline std::vector<Body>& get_body(){return body;};
-    inline void set_x(uint16_t x){this->head_x = x;};
-    inline void set_y(uint16_t y){this->head_y = y;};
+    
 
     void move(){
-        if(direction == Direction::UP) --(this->head_y);
-        else if(direction == Direction::DOWN) ++(this->head_y);
-        else if(direction == Direction::RIGHT) ++(this->head_x);
-        else --(this->head_x);
-
         for(Body& body_piece : body){
-            if(body_piece.get_x() == x_chg && body_piece.get_y() == y_chg){
-                body_piece.change_direction(direction);
-            }
-            body_piece.move();
-        }
+            for(Turn& turn : turns){
+                if(body_piece.x == turn.x && body_piece.y == turn.y){
+                    body_piece.change_direction(turn.direction); 
+                    if(body_piece.x == body.back().x && body_piece.y == body.back().y){
+                        turns.pop_front();
+                    }
+                }
 
+            }
+                  body_piece.move();
+        }
+        head = body[0];     
     }
 
     void change_direction(Direction new_direction){
-        if(new_direction != direction){
-            x_chg = head_x;
-            y_chg = head_y;
-            direction = new_direction;
+        if(new_direction != head.direction){
+            if( (new_direction == Direction::RIGHT && head.direction == Direction::LEFT) ||  
+                (new_direction == Direction::LEFT && head.direction == Direction::RIGHT) ||
+                (new_direction == Direction::UP && head.direction == Direction::DOWN) ||
+                (new_direction == Direction::DOWN && head.direction == Direction::UP))
+                return;
+            else
+                turns.push_back(Turn(head.x,head.y,new_direction));
         }  
     }
 
     void eat(){
         Body tail = body.back();
-        uint16_t tail_x = tail.get_x();
-        uint16_t tail_y = tail.get_y();
+        uint16_t tail_x = tail.x;
+        uint16_t tail_y = tail.y;
         uint16_t new_x;
         uint16_t new_y;
 
-        if(tail.get_direction() == Direction::UP){
+        if(tail.direction == Direction::UP){
             new_x = tail_x;
             new_y = tail_y + 1;
-        }else if(tail.get_direction() == Direction::DOWN){
+        }else if(tail.direction == Direction::DOWN){
             new_x = tail_x;
-            new_y = tail_y + 1;
-        }else if(tail.get_direction() == Direction::LEFT){
+            new_y = tail_y - 1;
+        }else if(tail.direction == Direction::LEFT){
             new_x = tail_x + 1;
             new_y = tail_y;
         }else{
@@ -105,7 +107,7 @@ public:
             new_y = tail_y;
         }
 
-        body.push_back(Body(new_x,new_y,tail.get_direction()));
+        body.push_back(Body(new_x,new_y,tail.direction));
     }
 
     
