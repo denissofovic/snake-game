@@ -2,6 +2,6 @@
 
 int main(){
     Game game;
-    game.init(50,25);
+    game.init();
     game.loop();
 }
