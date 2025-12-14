@@ -34,16 +34,15 @@ struct Body{
 class Snake{
 private: 
     std::vector<Body> body;
-    Body head;
     std::deque<Turn> turns;   
 
 public:
     Snake(){};
     Snake(int x, int y);
 
-    inline constexpr int get_x(){return head.x;};
-    inline constexpr int get_y(){return head.y;};
-    inline constexpr Direction get_direction(){return head.direction;};
+    inline constexpr int get_x(){return body[0].x;};
+    inline constexpr int get_y(){return body[0].y;};
+    inline constexpr Direction get_direction(){return body[0].direction;};
     inline std::vector<Body>& get_body(){return body;};
 
     void move();

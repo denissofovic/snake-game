@@ -16,11 +16,6 @@ void Field::fill_tiles(Snake& snake, Food& food){
         
         tiles[food.get_y()][food.get_x()] = '.';
 
-        std::cout << "Drawing snake body:" << std::endl;
-        for(auto& b : snake.get_body()){
-            std::cout << b.x << "," << b.y << std::endl;
-        }
-
 }
 
 
@@ -32,11 +27,9 @@ void Field::draw(){
         for(int x = 0; x < width; ++x){
             std::cout << tiles[y][x];
         }
-
         std::cout << "x" << std::endl;
     }
     std::cout << std::string(width+2, 'x') << std::endl;
-    for(int i = 0; i < height; ++i) std::cout << std::endl;
 
     std::cout.flush();
 }

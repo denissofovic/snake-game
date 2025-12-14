@@ -27,7 +27,7 @@ void Game::loop(){
                     snake.change_direction(Direction::UP);
                 };      
             }
-
+            
             std::this_thread::sleep_for(std::chrono::milliseconds(120));
             snake.move();
 

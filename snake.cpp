@@ -1,8 +1,9 @@
 #include "snake.h"
+#include <iostream>
 
 Snake::Snake(int x, int y){
-    head = Body{x,y,Direction::UP};
-    body.push_back(head);
+    std::cout << "snake init" << std::endl;
+    body.push_back(Body{x,y,Direction::UP});
 }
 
 void Snake::move(){
@@ -17,18 +18,17 @@ void Snake::move(){
         }
             body_piece.move();
     }
-    head = body[0];   
 }
 
 void Snake::change_direction(Direction new_direction){
-    if(new_direction != head.direction){
-        if( (new_direction == Direction::RIGHT && head.direction == Direction::LEFT) ||  
-            (new_direction == Direction::LEFT && head.direction == Direction::RIGHT) ||
-            (new_direction == Direction::UP && head.direction == Direction::DOWN) ||
-            (new_direction == Direction::DOWN && head.direction == Direction::UP))
+    if(new_direction != body[0].direction){
+        if( (new_direction == Direction::RIGHT && body[0].direction == Direction::LEFT) ||  
+            (new_direction == Direction::LEFT && body[0].direction == Direction::RIGHT) ||
+            (new_direction == Direction::UP && body[0].direction == Direction::DOWN) ||
+            (new_direction == Direction::DOWN && body[0].direction == Direction::UP))
             return;
         else
-            turns.push_back(Turn{head.x,head.y,new_direction});
+            turns.push_back(Turn{body[0].x,body[0].y,new_direction});
     }  
 }
 
